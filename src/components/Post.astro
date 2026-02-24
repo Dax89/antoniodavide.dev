@@ -1,0 +1,20 @@
+---
+import dayjs from "dayjs";
+import { Icon } from "astro-icon/components";
+
+const { post } = Astro.props
+
+const date = dayjs(post.data.modified || post.data.published).format("DD MMMM YYYY");
+---
+
+<li class="my-6">
+    <h3 class="text-lg font-bold text-accent">
+        <a class="hover:border-b" href={`/posts/${post.id}`}>{post.data.title}</a>
+    </h3>
+    <div class="text-muted flex items-center gap-x-2">
+        <Icon name="mdi:newspaper-variant-outline"/>
+        {date}
+        {post.data.modified && "(Updated)"} 
+    </div>
+    <p>{post.data.description}</p>
+</li>

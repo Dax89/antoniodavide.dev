@@ -1,0 +1,107 @@
+/*
+  The CSS in this style tag is based off of Bear Blog's default CSS.
+  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
+  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
+ */
+
+@import "tailwindcss";
+@import "./article.css";
+
+@font-face {
+	font-family: "JetBrains Mono";
+	src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "JetBrains Mono";
+	src: url("/fonts/JetBrainsMono-Bold.woff2") format("woff2");
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "JetBrains Mono";
+	src: url("/fonts/JetBrainsMono-Italic.woff2") format("woff2");
+	font-weight: normal;
+	font-style: italic;
+}
+
+:root {
+    --font: "JetBrains Mono";
+    --background: #202020;
+    --foreground: #f4f1d6;
+    --accent: #90caf9;
+    --mark: #96d952;
+    --abbr: #f8c7ff;
+    --muted: #757575;
+
+    --h1-size: 2rem;
+    --h2-size: 1.5rem;
+    --h3-size: 1.17rem;
+    --h4-size: 1rem;
+    --h5-size: 0.83rem;
+    --h6-size: 0.67rem;
+}
+
+::selection {
+    background-color: var(--accent);
+    color: var(--background);
+}
+
+@theme inline {
+    --font-app: var(--font);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-accent: var(--accent);
+    --color-muted: var(--muted);
+    --color-mark: var(--mark);
+}
+
+body {
+	font-family: var(--font), sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+	line-height: 1.6;
+    tab-size: 4;
+}
+
+kbd {
+    background: none repeat scroll 0 0 #CCCCD0;
+    border: 1px solid #808080;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    border-radius: 4px;
+    color: #000000;
+    margin: 0;
+    padding: 1px 4px;
+    min-width: 1.5em;
+
+    @apply text-center inline-block font-bold;
+}
+
+mark {  /* Override PagefindUI CSS */
+    background: var(--mark) !important;
+    padding: 0.2em !important;
+    border-radius: 3px !important;
+}
+
+sup {
+    font-size: calc(0.5em + 4px);
+    vertical-align: baseline;
+    position: relative;
+    top: calc(-0.5 * 0.83 * 2 * (1em - 4px)); /* Adjusted for natural scaling */
+}
+
+sub {
+    font-size: 0.8em;
+    position: relative;
+    bottom: -0.25em;
+    vertical-align: baseline;
+}
+
+abbr {
+    color: var(--abbr);
+    @apply no-underline italic border-b border-dashed;
+}

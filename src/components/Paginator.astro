@@ -1,0 +1,19 @@
+---
+import { Icon } from "astro-icon/components";
+
+const { page } = Astro.props
+---
+
+<div class="flex items-center justify-center space-x-3 mt-15">
+    {
+        page.url.prev ? <a href={page.url.prev}><Icon name="mdi:chevron-left" size="2rem"/></a>
+                      : <span><Icon class="text-muted" name="mdi:chevron-left" size="2rem"/></span>
+    }
+    <span>{page.currentPage}</span>
+    <span>/</span>
+    <span>{page.lastPage}</span>
+    {
+        page.url.next ? <a href={page.url.next}><Icon name="mdi:chevron-right" size="2rem"/></a>
+                      : <span><Icon class="text-muted" name="mdi:chevron-right" size="2rem"/></span>
+    }
+</div>

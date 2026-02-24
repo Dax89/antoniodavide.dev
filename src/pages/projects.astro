@@ -1,0 +1,49 @@
+---
+import Page from "../layouts/Page.astro";
+import Project from "../components/Project.astro";
+
+type Project = {
+    name: string;
+    url: string;
+    image?: string,
+    description: string,
+};
+
+const PROJECTS: Project[] = [
+    {
+        name: "REDasm", 
+        url: "https://redasm.dev",
+        image: "https://raw.githubusercontent.com/REDasmOrg/REDasm/master/artwork/Preview_20201204.png",
+        description: "The Open Source Disassembler", 
+    },
+    {
+        name: "QHexView", 
+        url: "https://github.com/Dax89/QHexView",
+        image: "https://user-images.githubusercontent.com/1503603/157109542-55d12002-4829-404c-9b1c-2f3836f3c754.png",
+        description: "An versatile Qt hexadecimal widget"
+    },
+    {
+        name: "PREF",
+        url: "https://pref.github.io",
+        image: "https://github.com/PREF/PREF/raw/master/Screenshots/002.jpg?raw=true",
+        description: "Portable Reverse Engineering Framework (in sleep state atm)"
+    },
+    {
+        name: "automaton.nvim", 
+        url: "https://github.com/Dax89/automaton.nvim",
+        description: "VSCode-Like Workspace Configuration Manager for NeoVim"
+    },
+    {
+        name: "Tanto", 
+        url: "https://github.com/Dax89/tanto",
+        description: "Qt/GTK+ based universal GUI for scripts"
+    },
+];
+
+---
+
+<Page title="Projects" description="A showcase of my projects">
+    <ul class="grid gap-y-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {PROJECTS.map(data => <Project {...data} />)}
+    </ul>
+</Page>

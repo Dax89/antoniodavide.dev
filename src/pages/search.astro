@@ -1,0 +1,70 @@
+---
+import { getSortedPosts } from "../utils.js"
+import { Icon } from "astro-icon/components";
+import Page from "../layouts/Page.astro";
+import Paginator from "../components/Paginator.astro";
+import Post from "../components/Post.astro";
+
+const posts = await getSortedPosts();
+---
+
+<Page title="Search" description="Search any post..." search={true}>
+    {
+    import.meta.env.DEV &&
+    <div class="bg-muted/45 p-5 mb-5 text-center border border-accent">
+        <h3 class="text-lg text-accent font-bold">!!! DEV MODE !!!</h3>
+        <p class="italic">
+            You need to run <code class="not-italic">npm run build</code> once too see search results.
+        </p>
+    </div>
+    }
+
+    <div id="search"></div>
+</Page>
+<script>
+    import { PagefindUI } from "@pagefind/default-ui";
+
+    window.addEventListener("DOMContentLoaded", () => {
+        new PagefindUI({
+            element: "#search",
+            showImages: false,
+            showSubResults: true,
+            autofocus: true,
+        });
+    });
+</script>
+<style is:global>
+    #search {
+        --pagefind-ui-font: var(--font-app);
+        --pagefind-ui-text: var(--foreground);
+        --pagefind-ui-background: var(--background);
+        --pagefind-ui-border: var(--muted);
+        --pagefind-ui-primary: var(--accent);
+        --pagefind-ui-tag: var(--background);
+        --pagefind-ui-border-radius: 0;
+        --pagefind-ui-border-width: 1px;
+        --pagefind-ui-image-border-radius: 8px;
+        --pagefind-ui-image-box-ratio: 3 / 2;
+
+        form::before { background-color: var(--foreground); }
+        input { border: 1px solid var(--muted); }
+        input:focus-visible { border: 1px solid var(--accent); outline: none; }
+
+        .pagefind-ui__result-title a {
+            color: var(--accent);
+            outline-offset: 1px;
+            outline-color: var(--accent);
+            text-decoration-style: dashed;
+            text-underline-offset: 4px;
+        }
+
+        .pagefind-ui__result-title a:focus-visible,
+        .pagefind-ui__search-clear:focus-visible {
+            text-decoration-line: none;
+            outline-width: 2px;
+            outline-style: dashed;
+        }
+
+        .pagefind-ui__result:last-of-type { border-bottom: 0; }
+    }
+</style>

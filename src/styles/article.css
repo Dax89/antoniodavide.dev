@@ -1,0 +1,25 @@
+@layer base {
+    #article {
+        h1, h2, h3, h4, h5, h6 { 
+            @apply font-bold text-accent mt-4 mb-1;
+        }
+
+        h1 { font-size: var(--h1-size); }
+        h2 { font-size: var(--h2-size); }
+        h3 { font-size: var(--h3-size); }
+        h4 { font-size: var(--h4-size); }
+        h5 { font-size: var(--h5-size); }
+        h6 { font-size: var(--h6-size); }
+
+        p { margin: 0 0 1em 0; }
+
+        a { @apply text-accent border-b border-accent; }
+        a:hover { @apply font-bold; }
+
+        img { @apply mx-auto m-3; }
+        figcaption { @apply pb-5 italic text-sm; }
+
+        ul { @apply list-disc my-3; }
+        ol { @apply list-decimal my-3; }
+    }
+}

@@ -1,0 +1,15 @@
+---
+import { Social, SOCIALS } from "../consts.ts";
+import { Icon } from "astro-icon/components";
+---
+
+<div class="flex flex-col lg:flex-row space-x-2">
+    {
+        SOCIALS.map((x: Social) => (
+        <a class="hover:text-accent py-2" href={x.href} target="_blank">
+            <span class="sr-only">{x.title}</span>
+            <Icon size="1.6rem" name={`mdi:${x.icon}`}/>
+        </a>
+        ))
+    }
+</div>

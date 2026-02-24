@@ -1,0 +1,28 @@
+---
+import { getSortedPosts, getTags, getPostsByTag } from "../../../utils.js"
+import Page from "../../../layouts/Page.astro";
+import Paginator from "../../../components/Paginator.astro";
+import Post from "../../../components/Post.astro";
+
+export async function getStaticPaths({paginate}) {
+    const posts = await getSortedPosts();
+    const tags = await getTags(posts);
+
+    return Object.keys(tags).flatMap(tag => {
+        return paginate(getPostsByTag(posts, tag), { 
+            params: { tag }
+        });
+    });
+}
+
+const { tag } = Astro.params;
+const { page } = Astro.props;
+---
+
+<Page title="Tags" description={`Posts with #${tag}`}>
+    <ul>
+        { page.data.map(x => <Post post={x}/>) }
+    </ul>
+    <Paginator page={page}/>
+</Page>
+

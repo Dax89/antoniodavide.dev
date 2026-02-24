@@ -1,0 +1,23 @@
+---
+import { Icon } from "astro-icon/components";
+import { SITE_TITLE } from "../consts";
+import HeaderLink from "./HeaderLink.astro";
+import Socials from "./Socials.astro";
+---
+
+<header class="py-5 mb-5 flex items-center justify-between border-b border-muted">
+    <h2 class="text-2xl font-bold flex-1">
+        <a href="/" class="hover:text-accent">{SITE_TITLE}</a>
+    </h2>
+    <ul class="flex flex-col lg:flex-row lg:items-center space-x-6 pr-10">
+        <HeaderLink href="/posts">Posts</HeaderLink>
+        <HeaderLink href="/projects">Projects</HeaderLink>
+        <HeaderLink href="/about">About</HeaderLink>
+    </ul>
+    <ul class="flex flex-col lg:flex-row lg:items-center space-x-3 pr-10">
+        <HeaderLink href="/archive"><Icon name="mdi:archive-outline" size="1.6rem"/></HeaderLink>
+        <HeaderLink href="/tags"><Icon name="mdi:tag-outline" size="1.6rem"/></HeaderLink>
+        <HeaderLink href="/search"><Icon name="mdi:search" size="1.6rem"/></HeaderLink>
+    </ul>
+    <Socials/>
+</header>

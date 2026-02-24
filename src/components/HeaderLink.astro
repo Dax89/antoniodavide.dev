@@ -1,0 +1,15 @@
+---
+const { href } = Astro.props;
+
+const p = "/" + Astro.url.pathname.replace(import.meta.env.BASE_URL, "");
+const active = p.startsWith(href) ;
+
+---
+
+<li class="py-2">
+    <a class=`font-bold hover:text-accent
+        ${active ? "text-accent" : ""}`
+        href={href}>
+        <slot />
+    </a>
+</li>

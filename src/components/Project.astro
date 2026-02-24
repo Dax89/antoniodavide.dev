@@ -1,0 +1,17 @@
+---
+const { name, url, image, description } = Astro.props;
+---
+
+<li class="p-3 max-w-sm transition-all duration-300 hover:scale-105 hover:bg-muted/35">
+    <a href={url} class="" target="_blank">
+        <div class="w-full h-60">
+            {image ? <img class="w-full h-full object-cover" src={image}>
+            : <div class="w-full h-full grid place-items-center border border-accent">
+                <span class="font-bold text-3xl border-b-2 ">{name}</span>
+            </div>
+            }
+        </div>
+        <h2 class="text-accent text-lg font-medium">{name}</h2>
+        <p>{description}</p>
+    </a>
+</li>

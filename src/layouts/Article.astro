@@ -1,0 +1,15 @@
+---
+import ScrollProgress from "../components/ScrollProgress.astro";
+import Page from "../layouts/Page.astro";
+const {frontmatter} = Astro.props;
+
+const post = Astro.props.frontmatter || Astro.props;
+---
+
+<Page title={post.title} description={post.description} nodescription={true} nobreadcrumb={true} showgoback={true}>
+    <slot name="header"/>
+    <ScrollProgress/>
+    <section id="article">
+        <slot/>
+    </section>
+</Page>

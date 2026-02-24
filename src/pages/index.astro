@@ -1,0 +1,48 @@
+---
+import { Icon } from "astro-icon/components";
+import Main from "../layouts/Main.astro";
+import Post from "../components/Post.astro";
+import { MAX_RECENTS } from "../consts.ts";
+import { getSortedPosts } from "../utils.js";
+
+const posts = await getSortedPosts();
+const featuredPosts = posts.filter(({ data }) => data.featured);
+const recentPosts = posts.filter(({ data }) => !data.featured).slice(0, MAX_RECENTS);
+---
+
+<Main>
+    <section class="pb-6 border-b border-muted">
+        <h1 class="my-4 inline-block text-5xl font-bold sm:my-8 sm:text-5xl">Hello World!</h1>
+        <p>
+        I'm an independent developer with 20 years of experience, active 
+        in Open Source and Reverse Engineer.
+        </p>
+    </section>
+    {
+        featuredPosts.length > 0 && (
+        <section class="py-6 ">
+            <h2 class="text-2xl font-bold">Featured</h2>
+            <ul>
+                {featuredPosts.map(x => <Post post={x}/>)}
+            </ul>
+        </section>
+        )
+    }
+    {
+        recentPosts.length > 0 && (
+        <section class="pt-6 border-t border-muted">
+            <h2 class="text-2xl font-bold">Recent Posts</h2>
+            <ul>
+                {recentPosts.map(x => <Post post={x}/>)}
+            </ul>
+
+            <div class="mt-4 text-center">
+                <a href="/posts" class="inline-flex mx-auto flex items-center hover:text-accent p-1">
+                    All Posts
+                    <Icon name="mdi:chevron-right" size="2rem"/>
+                </a>
+            </div>
+        </section>
+        )
+    }
+</Main>

@@ -1,0 +1,28 @@
+---
+import { Icon } from "astro-icon/components";
+import Main from "../layouts/Main.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
+
+const { title, 
+        description, 
+        search, 
+        showgoback, 
+        nodescription, 
+        nobreadcrumb } = Astro.props;
+---
+
+<Main title={title || ""} description={description || ""} search={search}>
+    {showgoback &&
+    <a href="/" class="text-lg inline-flex items-center gap-x-1 hover:text-accent">
+        <Icon name="mdi:chevron-left" size="1.4rem"/>
+        <span>Go Back</span>
+    </a> }
+
+    {nobreadcrumb !== true && <Breadcrumb/>}
+    <div class={!nodescription ? "my-5" : "mt-5 mb-2"}>
+        <h2 class="text-4xl font-bold">{title}</h2>
+        {!nodescription && <p class="text-sm italic mt-2">{description}</p>}
+    </div>
+    <slot/>
+</Main>
+

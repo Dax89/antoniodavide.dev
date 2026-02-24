@@ -1,0 +1,36 @@
+---
+import { Icon } from "astro-icon/components";
+
+const currenturl = Astro.url.pathname.replace(/\/+$/, "");
+const items = currenturl.split('/').slice(1);
+
+if(items[0] === "posts") items[0] = `Posts (Page ${items.splice(1, 1)[0] || 1})`;
+
+---
+
+<ul class="text-lg flex items-center space-x-2">
+    <li>
+        <a class="opacity-80 hover:opacity-100" href="/">Home</a>
+    </li>
+    <li>
+        <Icon name="mdi:chevron-double-left" class="rotate-180"/>
+    </li>
+    {items.map((x, index) => index == items.length - 1 ?(
+    <li>
+        <span class="capitalize opacity-80">
+            {x}
+        </span>
+    </li>
+    ) :
+    (
+    <li>
+        <a class="capitalize opacity-80 hover:opacity-100" href={`/${x}/`}>
+            {decodeURIComponent(x)}
+        </a>
+    </li>
+    <li>
+        <Icon name="mdi:chevron-double-left" class="rotate-180"/>
+    </li>
+    )
+    )}
+</ul>

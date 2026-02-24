@@ -1,0 +1,17 @@
+<div class="scroll-progress bg-mark fixed top-0 left-0 h-1 w-0 z-10"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const calculateScrollProgress = () => {
+            const scrolltop = window.scrollY;
+            const scrollheight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrolltop / scrollheight) * 100;
+            const progressbar = document.querySelector(".scroll-progress");
+            if (progressbar) progressbar.style.width = `${progress}%`;
+        };
+
+        window.addEventListener("scroll", () => {
+            requestAnimationFrame(calculateScrollProgress);
+        });
+    })
+</script>

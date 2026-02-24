@@ -1,0 +1,21 @@
+---
+import Page from "../layouts/Page.astro";
+import Post from "../components/Post.astro";
+import { getGroupedPosts } from "../utils.js";
+
+const posts = await getGroupedPosts();
+---
+
+<Page title="Archive" description="Chronological archive of my posts.">
+{
+    Object.keys(posts).reverse().map(year => (
+    <details class="cursor-pointer border border-muted p-3 mb-2 
+                    hover:border-accent open:border-accent">
+        <summary>{year}</summary>
+        <ul>
+            {posts[year].map(post => <Post post={post}/>)}
+        </ul>
+        </details>
+    ))
+}
+</Page>

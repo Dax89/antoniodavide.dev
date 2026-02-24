@@ -1,0 +1,19 @@
+---
+import { getSortedPosts } from "../../utils.js"
+import Page from "../../layouts/Page.astro";
+import Paginator from "../../components/Paginator.astro";
+import Post from "../../components/Post.astro";
+
+export async function getStaticPaths({paginate}) {
+    return paginate(await getSortedPosts());
+}
+
+const {page} = Astro.props;
+---
+
+<Page title="Posts" description="Discover my most recent posts.">
+    <ul>
+        { page.data.map(x => <Post post={x}/>) }
+    </ul>
+    <Paginator page={page}/>
+</Page>

@@ -1,0 +1,12 @@
+---
+import Socials from "./Socials.astro";
+
+const today = new Date();
+---
+
+<footer class="text-center flex items-center justify-between py-6 mt-6 border-t border-muted">
+    <div>
+        &copy; {today.getFullYear()} | All rights reserved.
+    </div>
+    <Socials/>
+</footer>
