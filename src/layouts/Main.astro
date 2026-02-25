@@ -13,7 +13,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const { title, description, search } = Astro.props;
 
 function ogImageUrl() {
-  const slug = Astro.url.pathname.replace(/posts\//, "");
+  let slug = Astro.url.pathname.replace(/posts\//, "");
+  if(slug === "/") slug = "/opengraph";
+  slug = slug.replace(/\/$/, ""); // Remove last / if exists
   return new URL(`${slug}.png`, Astro.url.origin);
 }
 
