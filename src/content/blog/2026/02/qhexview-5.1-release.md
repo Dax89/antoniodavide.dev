@@ -17,7 +17,7 @@ Over the years I received issues and pull requests from other developers that in
 
 That's great right? Yes it was!
 
-But the code was becoming messy and time consuming to maintain, so in 2022 I've dedided to rewrite the widget from scratch.
+But the code was becoming messy and time consuming to maintain, so in 2022 I've decided to rewrite the widget from scratch.
 The development began with [a dedicated thread](https://github.com/Dax89/QHexView/issues/71) where I notify all contributors in order to make this release tailored to our needs.
 
 <figure class="text-center">
@@ -32,15 +32,6 @@ This widget is now at release 5.1 which sports a new, written from scratch, rend
 3. Clipboard support for various formats (visual copy, hex copy, etc...).
 4. It's also possible to highlight patched bytes via `setTrackChanges()` method.
 5. And lots of other minor features, but it's too long to list them here.
-
-```cpp
-using namespace std;
-
-int main() {
-    return 0;
-}
-```
-
 
 ## Final Thoughts
 Thanks to the user's feedback, QHexView evolved far beyond my goals, it reached its fifth major release, the code is manageable and I'm very happy about that!
