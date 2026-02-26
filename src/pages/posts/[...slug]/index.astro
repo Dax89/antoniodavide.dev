@@ -1,12 +1,11 @@
 ---
 import dayjs from "dayjs";
-import { render } from "astro:content";
-import { getPosts } from "../../../utils.js";
+import { getCollection, render } from "astro:content";
 import Article from "../../../layouts/Article.astro";
 import Tag from "../../../components/Tag.astro";
 
 export async function getStaticPaths() {
-    const posts = await getPosts();
+    const posts = await getCollection("blog");
     return posts.map((post) => ({
         params: { slug: post.id },
         props: post,
