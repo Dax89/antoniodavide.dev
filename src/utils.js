@@ -68,7 +68,7 @@ export function getPostsByTag(posts, tag) {
 export async function getImagePng(title) {
     const MARKUP = html(`
         <div style="width: 100%; height: 100%; display: flex; background-color: #202020; color: #f4f1d6;">
-            <div style="display: flex; position: absolute; left: 4%; top: 2%; width: 94%; height: 92%; border: 2px solid #383838; background-color: #2a2a2a;"></div>
+            <div style="display: flex; position: absolute; left: 4%; top: 2%; width: 94%; height: 92%; border: 2px solid #404040; background-color: #303030;"></div>
             <div style="display: flex; flex-direction: column; box-sizing: border-box; padding: 52px 56px 44px 56px; position: absolute; left: 2%; top: 6%; width: 94%; height: 92%; border: 2px solid #f4f1d6; background-color: #202020;">
                 <div style="display: flex; flex-direction: column; flex: 1; justify-content: center;">
                     <div style="font-size: 62px; font-weight: 700; letter-spacing: -1px; line-height: 1.15; margin: 0;">${title}</div>
