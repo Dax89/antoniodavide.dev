@@ -1,0 +1,14 @@
+---
+import { Icon } from "astro-icon/components";
+
+const { message } = Astro.props
+---
+
+<div class="text-alert flex items-center border border-alert my-5 p-2 space-x-1">
+    <div>
+        <Icon class="p-1" name="mdi:times" size="2.5rem"/>
+    </div>
+    <div class="italic">
+        {message}
+    </div>
+</div>

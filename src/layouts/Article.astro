@@ -1,7 +1,6 @@
 ---
 import ScrollProgress from "../components/ScrollProgress.astro";
 import Page from "../layouts/Page.astro";
-const {frontmatter} = Astro.props;
 
 const post = Astro.props.frontmatter || Astro.props;
 ---
@@ -9,7 +8,48 @@ const post = Astro.props.frontmatter || Astro.props;
 <Page title={post.title} description={post.description} nodescription={true} nobreadcrumb={true} showgoback={true}>
     <slot name="header"/>
     <ScrollProgress/>
-    <section id="article">
+    <article>
         <slot/>
-    </section>
+    </article>
 </Page>
+<script>
+    const COPY_LABEL = "Copy";
+    const codeblocks = document.querySelectorAll("pre.astro-code");
+
+    async function copyCode(codeblock: Element, btncopy: HTMLButtonElement) {
+        const code = codeblock.querySelector("code");
+        if(!code) return;
+
+        const text = code.innerText;
+
+        await navigator.clipboard.writeText(text);
+        btncopy.innerText = "Copied";
+        btncopy.classList.add("border-success", "text-success");
+
+        setTimeout(() => {
+            btncopy.innerText = COPY_LABEL;
+            btncopy.classList.remove("border-success", "text-success");
+        }, 1000);
+    }
+
+    for(const cb of codeblocks) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "relative";
+
+        const btncopy = document.createElement("button");
+        btncopy.type = "button";
+        btncopy.className = "copy-code";
+        btncopy.innerHTML = COPY_LABEL;
+
+        cb.setAttribute("tabindex", "0");
+        cb.appendChild(btncopy);
+
+        // wrap codebock with relative parent element
+        cb.parentNode?.insertBefore(wrapper, cb);
+        wrapper.appendChild(cb);
+
+        btncopy.addEventListener("click", async () => {
+            await copyCode(cb, btncopy);
+        })
+    }
+</script>

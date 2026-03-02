@@ -33,9 +33,12 @@
     --background: #202020;
     --foreground: #f4f1d6;
     --accent: #90caf9;
-    --mark: #96d952;
-    --abbr: #f8c7ff;
+    --mark: #f8c7ff;
     --muted: #757575;
+    --alert: #ff7575;
+    --warning: #ffb22e;
+    --success: #96d952;
+    --info: #4ce0c5;
 
     --h1-size: 2rem;
     --h2-size: 1.5rem;
@@ -57,6 +60,10 @@
     --color-accent: var(--accent);
     --color-muted: var(--muted);
     --color-mark: var(--mark);
+    --color-alert: var(--alert);
+    --color-warning: var(--warning);
+    --color-success: var(--success);
+    --color-info: var(--info);
 }
 
 body {
@@ -83,6 +90,7 @@ kbd {
 
 mark {  /* Override PagefindUI CSS */
     background: var(--mark) !important;
+    color: var(--background) !important;
     padding: 0.2em !important;
     border-radius: 3px !important;
 }
@@ -102,6 +110,6 @@ sub {
 }
 
 abbr {
-    color: var(--abbr);
+    color: var(--mark);
     @apply no-underline italic border-b border-dashed;
 }

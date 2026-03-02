@@ -1,0 +1,14 @@
+---
+import { Icon } from "astro-icon/components";
+
+const { message } = Astro.props
+---
+
+<div class="text-warning flex items-center border border-warning my-5 p-2 space-x-2">
+    <div>
+        <Icon class="p-1" name="mdi:exclamation" size="2.5rem"/>
+    </div>
+    <div class="italic">
+        {message}
+    </div>
+</div>

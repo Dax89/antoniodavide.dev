@@ -1,5 +1,5 @@
 @layer base {
-    #article {
+    article {
         h1, h2, h3, h4, h5, h6 { 
             @apply font-bold mt-4 mb-1;
         }
@@ -11,6 +11,13 @@
         h5 { font-size: var(--h5-size); }
         h6 { font-size: var(--h6-size); }
 
+        pre { @apply relative p-1 my-3; }
+
+        :not(pre) > code { 
+            @apply border border-muted/50; 
+            padding: 0.18rem;
+        }
+
         p { margin: 0 0 1em 0; }
 
         a { @apply text-accent border-b border-accent; }
@@ -19,7 +26,20 @@
         img { @apply mx-auto m-3; }
         figcaption { @apply pb-5 italic text-sm; }
 
-        ul { @apply list-disc my-3; }
-        ol { @apply list-decimal my-3; }
+        ul { @apply list-disc; }
+        ol { @apply list-decimal; }
+        ul, ol { margin-bottom: 1em; }
+
+        .copy-code {
+            @apply absolute top-0 right-0 px-2 py-1;
+            @apply cursor-pointer font-bold text-xs uppercase;
+            @apply border border-accent text-accent;
+
+            background-color: #282A36; /* from 'dracula' theme */
+        }
+
+        .copy-code:hover {
+            @apply border-foreground text-foreground;
+        }
     }
 }
