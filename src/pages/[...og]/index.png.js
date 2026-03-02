@@ -1,4 +1,4 @@
-import { getPosts, getImagePng } from "../utils.js"
+import { getPosts, getImagePng } from "../../utils.js"
 
 export async function getStaticPaths() {
     return (await getPosts())
