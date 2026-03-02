@@ -1,0 +1,53 @@
+---
+import "../styles/global.css";
+import { SITE_TITLE } from "../consts";
+
+const SITE_USER = "visitor"
+const SITE_PROMPT = `[${SITE_USER}@${SITE_TITLE}]`;
+---
+
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="description" content="This page does not exist." />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>404: Not Found</title>
+    </head>
+    <body>
+        <main class="relative min-w-screen min-h-screen text-xl">
+            <div class="absolute flex flex-col left-20 top-1/2 -translate-y-1/2">
+                <div>
+                    <p>
+                    <span class="text-accent font-bold">{SITE_PROMPT}</span><span>: </span>
+                        <span>GET {Astro.url.pathname}</span>
+                    </p>
+                </div>
+                <div class="text-alert font-bold uppercase">404: page not found</div>
+                <div>
+                    <span class="text-accent font-bold">{SITE_PROMPT}</span><span>: </span>
+                    <a href="/" class="hover:text-accent underline underline-offset-6">cd /home/{SITE_USER}</a>
+                    <span class="cursor w-1">▋</span>
+                </div>
+            </div>
+        </main>
+        <style>
+            .cursor {
+                display: inline-block;
+                width: 1ch;
+                background-color: currentColor;
+                animation: blink 1s step-end infinite;
+            }
+
+            @keyframes blink {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0; }
+            }
+        </style>
+    </body>
+</html>
