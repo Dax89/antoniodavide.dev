@@ -1,0 +1,435 @@
+---
+title: 'Hunting strings in binary files'
+published: '02 Mar 2026'
+
+description:
+  Is it possible to detect and validate strings stored in an unknown file? 
+  Let's find out!
+
+tags:
+  - c
+  - binary
+  - algorithms
+---
+
+import Info from "../../../../components/box/Info.astro";
+
+Let's suppose we want to analyze an unknown file in order to get some information
+about its content.  
+In binary analysis, everything begins by looking for strings because they are the
+only human readable data stored there.
+
+Strings? What could go wrong?  
+Let's see!
+
+<Info message="This post will explore the ASCII Character Set only"/>
+
+## Strategy #1: contiguous alphanumeric characters
+We can assume that a contiguous series of alphanumeric characters is a valid string:
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+void print_strings(const char* s, int len) {
+    const char* end = s + len;
+
+    while(s < end) {
+        if(isalnum(*s)) { // we found an alphanumeric character
+            const char* start = s; // save the start position
+
+            // continue scanning until end or non-alphanumeric character is found
+            while(s < end && isalnum(*s))
+                s++;
+
+            // we found a string, calculate its length and print it
+            int n = s - start;
+            printf("%.*s\n", n, start);
+        }
+        else // non-alphanumeric, go ahead...
+            s++;
+    }
+}
+```
+
+This code works fine but there are few issues:
+1. punctuation marks are invalid.
+2. whitespaces are invalid, this breaks detection and gives too many results.
+3. single characters are detected as valid strings.
+
+## Strategy #2: improved detection 
+Let's begin to define some rules:
+1. the character's range `A-Za-z0-9`, whitespaces and all punctuations are valid.
+2. strings longer than a certain value are valid.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+#define MIN_STRING_LENGTH 4 // strings with >= 4 characters are valid
+
+static inline bool is_char_valid(char ch) {
+    return isspace(ch) || isalnum(ch) || ispunct(ch);
+}
+
+void print_strings(const char* s, int len) {
+    const char* end = s + len;
+
+    while(s < end) {
+        if(is_char_valid(*s)) { // validate the character
+            const char* start = s;
+
+            // continue scanning until end or
+            // an invalid character is found
+            while(s < end && is_char_valid(*s))
+                s++;
+
+            int n = s - start;
+            if(n >= MIN_STRING_LENGTH) // did we find a valid string?
+                printf("%.*s\n", n, start);
+        }
+        else // non-alphanumeric, go ahead...
+            s++;
+    }
+}
+```
+
+and this is the output from my sample executable:
+
+```
+TextOutA
+StartPage
+EndDoc
+DeleteObject
+DeleteDC
+GetSaveFileNameA
+GetOpenFileNameA
+PrintDlgA
+crackme.EXE
+WndProc
+030=0F0K0X0i0o0y0}0
+1)0-0
+2)242
+2P3U3l3q3
+4$4*40464<4B4H4N4T4Z4`4f4l4r4x4~4
+5 5&5,52585>5D5J5P5V5\5b5h5n5
+wwww
+wwwx
+wwwwwww
+wwwww
+TDDDDDDX
+DDDDDDDDDDDDDDDDTDDDDDDDDDDDU
+```
+
+This is much better: whitespaces are now part of the strings and punctuations are accepted!  
+But as you can see, there are still gibberish strings mixed with valid ones.  
+
+## Strategy #3: real world strings
+Now the question is: how can we improve the detection algorithm in order to reduce 
+false positives?  
+I did various tests and came to a conclusion that a string should be 
+considered gibberish if:
+1. there are more numbers or punctuations than alphabetic characters.
+2. one character dominates the string (eg. "aaaaaa").
+3. shannon entropy is below 2
+
+<Info message='Shannon entropy handles case 2 as well, strings like "aaaaaa" 
+have entropy 0'/>
+
+Also, we will do some refinements to our `is_char_valid()` function in order to become granular.  
+Instead of using `ctype.h` functions we check ASCII values ourself with the help of the [ASCII table](https://www.asciitable.com),
+we will also exclude `` ` `` and `~` because are not very common characters.
+
+```c
+#include <math.h>
+
+#define MIN_STRING_LENGTH 4
+#define MAX_CHARS 256
+#define CHARS_FREQ 0.7 // 70%
+#define MIN_ENTROPY 2.0
+
+static inline bool is_char_valid(char c) {
+    // whitespace and punctuation characters...
+    if(c == ' ' || (c >= '!' && c <= '/') || (c >= ':' && c <= '@') ||
+       (c >= '{' && c <= '}'))
+        return true;
+
+    // ...numbers...
+    if(c >= '0' && c <= '9') return true;
+
+    // ...lowercase and uppercase letters...
+    if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) return true;
+
+    return false;
+}
+
+static double entropy(const char* s, int len) {
+    int frequency[MAX_CHARS] = {0};
+
+    for(int i = 0; i < len; i++)
+        frequency[(int)s[i]]++;
+
+    double e = 0.0;
+
+    for(int i = 0; i < MAX_CHARS; i++) {
+        if(frequency[i]) {
+            double prob = frequency[i] / (double)len;
+            e -= prob * log2(prob);
+        }
+    }
+
+    return e;
+}
+
+static bool is_gibberish(const char* s, int len) {
+    // strings smaller than threshold are gibberish
+    if(len < MIN_STRING_LENGTH) return true;
+
+    int chars[MAX_CHARS] = {0};
+
+    // count character's occurrences
+    for(int i = 0; i < len; i++)
+        chars[(int)s[i]]++;
+
+    int nalpha = 0;
+
+    // count lowercase characters
+    for(int c = 'a'; c <= 'z'; c++)
+        nalpha += chars[c];
+
+    // count uppercase characters
+    for(int c = 'A'; c <= 'Z'; c++)
+        nalpha += chars[c];
+
+    // check if there are enough alphabetic characters
+    if(nalpha / (double)len < CHARS_FREQ) return true;
+
+    // catch strings like "aaaaaa" and other junk
+    return entropy(s, len) < MIN_ENTROPY;
+}
+
+void print_strings(const char* s, int len) {
+    const char* end = s + len;
+
+    while(s < end) {
+        if(is_char_valid(*s)) { // validate the character
+            const char* start = s;
+
+            // continue scanning until end or an invalid character is found
+            while(s < end && is_char_valid(*s))
+                s++;
+
+            int len = s - start;
+
+            if(!is_gibberish(start, len)) // did we find a string?
+                printf("%.*s\n", len, start);
+        }
+        else // non-alphanumeric, go ahead...
+            s++;
+    }
+}
+```
+
+Here is the output of the same file of the previous chapter:
+```
+This program must be run under Win32
+CODE
+.idata
+.edata
+@.reloc
+P.rsrc
+Try to crack me!
+No need to disasm the code!
+MENU
+REGIS
+ABOUT
+Good work!
+Great work, mate!
+Now try the next CrackMe!
+No luck!
+No luck there, mate!
+USER32.dll
+KERNEL32.dll
+COMCTL32.DLL
+COMDLG32.dll
+KillTimer
+GetSystemMetrics
+GetModuleHandleA
+ReadFile
+ExitProcess
+InitCommonControls
+CreateToolbarEx
+CreateToolbar
+TextOutA
+StartPage
+StartDocA
+GetTextMetricsA
+GetStockObject
+EndPage
+EndDoc
+DeleteObject
+DeleteDC
+GetSaveFileNameA
+GetOpenFileNameA
+PrintDlgA
+crackme.EXE
+WndProc
+```
+
+There are still few gibberish strings, but it's a lot better than before!
+
+## Bonus strategy: special strings
+So far so good, we have reduced the number of false positives and we are happy, but...  
+If we are going to look for strings in an executable file there are two
+particular kinds that don't really fit our detection algorithm:
+
+- C-Style formatting patterns like `%s` and `%d` allow to find debug messages, logs and more.
+- Strings surrounded by quotes and parenthesis.
+
+In these cases we can bypass our detection algorithm: we want to reduce the number 
+of false positives but we don't need to be too aggressive and causing legal strings 
+to be filtered out.  
+
+We need to keep some balance.
+
+### 1: C-Style strings
+We will build a table of valid formats and we compare the candidate string against them:
+
+```c
+static const char* c_formats[] = {
+    "%c", "%d", "%e", "%E",  "%f", "%g", "%G", "%hi", "%hu",
+    "%i", "%ld", "%li", "%lf", "%Lf", "%lu", "%lli", "%lld",
+    "%llu", "%o", "%p", "%s", "%u", "%x", "%X", "%n", "%%",
+};
+
+#define N_FORMATS (sizeof(c_formats) / sizeof(*c_formats))
+
+static bool check_cformat(const char* s, int len) {
+    for(unsigned int i = 0; i < N_FORMATS; i++) {
+        int fmtlen = strlen(c_formats[i]);
+        if(fmtlen == len && !strncmp(s, c_formats[i], fmtlen)) return true;
+    }
+
+    return false;
+}
+```
+
+### 2: Surrounded strings
+It's pretty simple, we check if a string start and ends with a specific character,
+also, we will ignore surrounded empty strings.
+
+```c
+static bool validate_format(const char* s, int len) {
+    if(len <= 2) return false; // ignore (), "", <>,  ...
+
+    const char* e = s + len - 1;
+
+    // check if the string is surrounded
+    if(*s == '\'' && *e == '\'') return true;
+    if(*s == '\"' && *e == '\"') return true;
+    if(*s == '<' && *e == '>') return true;
+    if(*s == '(' && *e == ')') return true;
+    if(*s == '[' && *e == ']') return true;
+    if(*s == '{' && *e == '}') return true;
+
+    return false;
+}
+```
+
+## Putting all together
+Now it's time to adjust our `is_gibberish()` function to use our new `validate_format()`,
+I will skip all functions defined before for reading speed and keep focus only on 
+changes needed, so look above if you need to look at them again.
+
+```c
+#include <math.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MIN_STRING_LENGTH 4
+#define MAX_CHARS 256
+#define CHARS_FREQ 0.7 // 70%
+#define MIN_ENTROPY 2.0
+
+static const char* c_formats[] = {
+    "%c", "%d", "%e", "%E",  "%f", "%g", "%G", "%hi", "%hu",
+    "%i", "%ld", "%li", "%lf", "%Lf", "%lu", "%lli", "%lld",
+    "%llu", "%o", "%p", "%s", "%u", "%x", "%X", "%n", "%%",
+};
+
+#define N_FORMATS (sizeof(c_formats) / sizeof(*c_formats))
+
+static bool check_cformat(const char* s, int len) {
+    for(unsigned int i = 0; i < N_FORMATS; i++) {
+        int fmtlen = strlen(c_formats[i]);
+        if(fmtlen == len && !strncmp(s, c_formats[i], fmtlen)) return true;
+    }
+
+    return false;
+}
+
+static bool validate_format(const char* s, int len) {
+    // !!! check c-style formatting first !!!
+    if(*s == '%') return check_cformat(s, len);
+
+    // ignore (), "", <>,  ...
+    if(len <= 2) return false;
+
+    const char* e = s + len - 1;
+
+    // check if the string is surrounded
+    if(*s == '\'' && *e == '\'') return true;
+    if(*s == '\"' && *e == '\"') return true;
+    if(*s == '<' && *e == '>') return true;
+    if(*s == '(' && *e == ')') return true;
+    if(*s == '[' && *e == ']') return true;
+    if(*s == '{' && *e == '}') return true;
+
+    return false;
+}
+
+static bool is_gibberish(const char* s, int len) {
+    // we found a "special" string
+    if(validate_format(s, len)) return false;
+
+    // strings smaller than threshold are gibberish
+    if(len < MIN_STRING_LENGTH) return true;
+
+    int chars[MAX_CHARS] = {0};
+
+    // count repetitions
+    for(int i = 0; i < len; i++)
+        chars[(int)s[i]]++;
+
+    int nalpha = 0;
+
+    // count lowercase characters
+    for(int c = 'a'; c <= 'z'; c++)
+        nalpha += chars[c];
+
+    // count uppercase characters
+    for(int c = 'A'; c <= 'Z'; c++)
+        nalpha += chars[c];
+
+    // check if there are enough alphabetic characters
+    if(nalpha / (double)len < CHARS_FREQ) return true;
+
+    // catch strings like "aaaaaa" and other junk
+    return entropy(s, len) < MIN_ENTROPY;
+}
+```
+
+## Final Thoughts
+
+String detection is a fundamental piece of binary analysis, it allows you to get a 
+general idea about the content of a binary file.  
+It also gives hints about compressed or obfuscated data because usually you will
+not find strings there and if you perform an entropy analysis of the file you can find a
+high value (entropy >= 7).  
+We began from a simple alphanumeric scanning, code was working but we noticed lots of false positives.  
+We then made our valid character set stricter by removing some uncommon characters, added entropy analysis
+and finally introduced some special rules for C-style strings and surrounded strings.  
+Feel free to tune the algorithm to suit your needs, change constant values and so on!
