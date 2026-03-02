@@ -6,7 +6,8 @@ interface Social {
 };
 
 export const SITE_TITLE = "antoniodavide.dev";
-export const SITE_DESCRIPTION = "A Developer's Diary";
+export const SITE_AUTHOR = "Antonio Davide";
+export const SITE_DESCRIPTION = "The Coding Chronicles";
 export const MAX_RECENTS = 5;
 
 export const SOCIALS: Social[] = [

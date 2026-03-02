@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { getCollection } from "astro:content";
 import { html } from "satori-html";
+import { SITE_TITLE, SITE_AUTHOR } from "./consts.ts";
 import satori from "satori";
 import sharp from "sharp";
 
@@ -66,19 +67,23 @@ export function getPostsByTag(posts, tag) {
 
 export async function getImagePng(title) {
     const MARKUP = html(`
-<div style="width: 100%; height: 100%; display: flex; background-color: #202020; color: #f4f1d6; position: relative">
-    <div style="display: flex; position: absolute; left: 4%; top: 2%; width: 94%; height: 92%; border: 4px solid #f4f1d6; background-color: #757575"></div>
-    <div style="position: absolute; left: 2%; top: 6%; width: 94%; height: 92%; border: 4px solid #f4f1d6; background-color: #202020; display: flex; flex-direction: column; padding: 35px">
-        <div style="flex: 1; font-size: 64; font-weight: bold; color: #f4f1d6">
-            ${title}
+        <div style="width: 100%; height: 100%; display: flex; background-color: #202020; color: #f4f1d6;">
+            <div style="display: flex; position: absolute; left: 4%; top: 2%; width: 94%; height: 92%; border: 2px solid #383838; background-color: #2a2a2a;"></div>
+            <div style="display: flex; flex-direction: column; box-sizing: border-box; padding: 52px 56px 44px 56px; position: absolute; left: 2%; top: 6%; width: 94%; height: 92%; border: 2px solid #f4f1d6; background-color: #202020;">
+                <div style="display: flex; flex-direction: column; flex: 1; justify-content: center;">
+                    <div style="font-size: 62px; font-weight: 700; letter-spacing: -1px; line-height: 1.15; margin: 0;">${title}</div>
+                </div>
+                <div style="display: flex; width: 56px; height: 2px; background-color: #90caf9; margin-bottom: 24px;"></div>
+                <div style="font-size: 28px; display: flex; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span>by</span>
+                        <span style="color: #90caf9; font-weight: 700;">${SITE_AUTHOR}</span>
+                    </div>
+                    <span style="flex:1;"></span>
+                    <span style="color: #90caf9; font-weight: 700;">${SITE_TITLE}</span>
+                </div>
+            </div>
         </div>
-        <div style="font-size: 32; display: flex">
-            <div style="display: contents">by<b style="padding-left: 10; color: #90caf9">Antonio Davide</b></div>
-            <span style="flex: 1"></span>
-            <b style="padding-left: 10; color: #90caf9">antoniodavide.dev</b>
-        </div>
-    </div>
-</div>
 `);
 
     const FontRegular = readFileSync(`${process.cwd()}/public/fonts/JetBrainsMono-Regular.ttf`);
@@ -88,8 +93,8 @@ export async function getImagePng(title) {
         width: 1200,
         height: 630,
         fonts: [
-            { name: "JetBrainsMono Regular", data: FontRegular },
-            { name: "JetBrainsMono Bold", data: FontBold, weight: 700 },
+            { name: "JetBrainsMono", data: FontRegular, weight: 400 },
+            { name: "JetBrainsMono", data: FontBold, weight: 700 },
         ]
     })
 
