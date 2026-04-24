@@ -12,7 +12,7 @@ tags:
   - qt
 ---
 
-Almost ~10 years ago I began to write a little widget to display binary data for one of [my old projects](https://github.com/PREF/PREF) (now in sleep state) and today for [my own disassembler](https://github.com/REDasmOrg/REDasm), after a while I decided to isolate its code and move it to a dedicated repository hoping it will be useful to other developers.
+Almost ~10 years ago I began to write a little widget to display binary data for one of [my old projects](https://github.com/PREF/PREF) (now in sleep state) and today for [my own disassembler](https://github.com/redasm-dev/redasm), after a while I decided to isolate its code and move it to a dedicated repository hoping it will be useful to other developers.
 Over the years I received issues and pull requests from other developers that increased the widget's release to version 4.x.
 
 That's great right? Yes it was!
