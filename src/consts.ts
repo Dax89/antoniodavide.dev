@@ -30,6 +30,12 @@ export const SOCIALS: Social[] = [
         icon: "twitter",
     },
     {
+        name: "Fediverse",
+        href: "https://tilde.zone/@dax89",
+        title: `${SITE_TITLE} on Fediverse`,
+        icon: "mastodon",
+    },
+    {
         name: "RSS",
         href: "/rss.xml",
         title: `Subscribe to ${SITE_TITLE}`,
