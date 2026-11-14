@@ -31,7 +31,7 @@ export const SOCIALS: Social[] = [
     },
     {
         name: "Fediverse",
-        href: "https://tilde.zone/@dax89",
+        href: "https://mastodon.social/@dax89",
         title: `${SITE_TITLE} on Fediverse`,
         icon: "mastodon",
     },
