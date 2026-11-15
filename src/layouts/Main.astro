@@ -12,6 +12,9 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const { title, description, search } = Astro.props;
 
+const isArticle = Astro.url.pathname.startsWith("/posts/") && Astro.url.pathname !== "/posts/";
+const ogType = isArticle ? "article" : "website";
+
 function ogImageUrl() {
     if(Astro.url.pathname.startsWith("/posts/")) {
         let slug = Astro.url.pathname.replace(/posts\//, "");
@@ -31,7 +34,8 @@ function ogImageUrl() {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="generator" content={Astro.generator} />
-        <meta name="fediverse:creator" content="@dax89@mastodon.social" />
+
+        {isArticle && <meta name="fediverse:creator" content="@dax89@mastodon.social" />}
 
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -51,11 +55,8 @@ function ogImageUrl() {
         <!-- Canonical URL -->
         <link rel="canonical" href={canonicalURL} />
 
-        {
-            search === true && 
-            <!-- Search Library -->
-            <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
-        }
+        <!-- Search Library -->
+        {search === true && <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />}
 
         <!-- Primary Meta Tags -->
         <title>{title}</title>
@@ -63,7 +64,7 @@ function ogImageUrl() {
         <meta name="description" content={description} />
 
         <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content={ogType} />
         <meta property="og:url" content={Astro.url} />
         <meta property="og:title" content={title || SITE_TITLE} />
         <meta property="og:description" content={description || SITE_DESCRIPTION} />
